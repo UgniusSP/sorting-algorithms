@@ -1,54 +1,58 @@
 #include <iostream>
-#include <array>
+#include <algorithm>
 #include <fstream>
-#include <ctime>
+#include <chrono>
+#include <vector>
 using namespace std;
 
-void shellsort(int arr[], int n){
+void shellsort(vector <int>& arr){
+    int n = arr.size();
     for(int i = n/2; i > 0; i /= 2){
-        //cout << endl;
-        //cout << arr[i] << endl;
+        
         for(int j = i; j < n; j++){
-            //cout << "j " << j << endl;
+            
             int temp = arr[j];
 
                 int k;
                 for(k = j; k >= i && arr[k-i] > temp; k -= i){
                     arr[k] = arr[k-i];
-                    //cout << "k " << k << endl;
+                    
                 }
             arr[k] = temp;
             
         }
-    }
-    
+    } 
 }
 
-void print(int arr[], int n){
-    for(int i=0;i<n;i++){
+void print(vector <int>& arr){
+    for(int i = 0; i < arr.size(); i++){
         cout <<  arr[i] << " ";
     }
 }
 
 int main(){
-    int temp;
-    
+
     ifstream is;
     is.open("random.txt");
-    
-    int arr[10000];
 
-    int i;
-    for(int i=0;i<10000;i++){
-        is >> arr[i];
-    }
+    const int size = 100000;
+    vector <int> arr(size);
+    generate(arr.begin(), arr.end(), rand);
 
-    int n = sizeof(arr)/sizeof(arr[0]);
+    // int temp;
+    // for(int i = 0; i < size; i++){
+    //    is >> temp;
+    //    arr.push_back(temp);
+    // }
 
-    clock_t start = (int)clock();
-    shellsort(arr, n);
-    print(arr, n);
-    printf("%0.5fs", (float)(clock() - start) / CLOCKS_PER_SEC);
+    //int n = sizeof(arr)/sizeof(arr[0]);
+
+    auto start = chrono::high_resolution_clock::now();
+    shellsort(arr);
+    auto end = chrono::high_resolution_clock::now();
+    print(arr);
+    chrono::duration<double> duration = end - start;
+    cout << endl <<"Time taken by shellsort: " << duration.count() << " seconds" << endl;
     
     is.close();
     return 0;
