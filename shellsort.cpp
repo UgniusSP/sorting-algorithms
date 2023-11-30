@@ -32,28 +32,58 @@ void print(vector <int>& arr){
 
 int main(){
 
-    ifstream is;
-    is.open("random.txt");
+    int size;
+    using std::chrono::high_resolution_clock;
+    using std::chrono::duration_cast;
+    using std::chrono::duration;
+    using std::chrono::milliseconds;
 
-    const int size = 100000;
-    vector <int> arr(size);
-    generate(arr.begin(), arr.end(), rand);
+    for(int i = 0; i < 5; i++){
+        switch(i){
+            case 0:
+                size = 100000;
+                break;
+            case 1:
+                size = 250000;
+                break;
+            case 2:
+                size = 500000;
+                break;
+            case 3:
+                size = 750000;
+                break;
+            case 4:
+                size = 1000000;
+                break;
+        }
 
-    // int temp;
-    // for(int i = 0; i < size; i++){
-    //    is >> temp;
-    //    arr.push_back(temp);
-    // }
+        for(int k = 0; k < 5; k++){
+            
+            vector <int> arr(size);
+            generate(arr.begin(), arr.end(), rand); 
+            vector <int> arrCopy = arr;
 
-    //int n = sizeof(arr)/sizeof(arr[0]);
+            for(int j = 0; j < 6; j++){
+                arr = arrCopy;
+                //cout << "Before sorting ";
+                //print(arr);
+                auto start = chrono::high_resolution_clock::now();
+                shellsort(arr);
+                auto end = chrono::high_resolution_clock::now();
 
-    auto start = chrono::high_resolution_clock::now();
-    shellsort(arr);
-    auto end = chrono::high_resolution_clock::now();
-    print(arr);
-    chrono::duration<double> duration = end - start;
-    cout << endl <<"Time taken by shellsort: " << duration.count() << " seconds" << endl;
+                auto ms_int = duration_cast<milliseconds>(end - start);
+                duration<double, std::milli> ms_double = end - start;
+
+                cout << endl << j <<" Time taken by shellsort with size " << size <<": " << ms_double.count() << " miliseconds" << endl;
+                //cout << "After sorting ";
+                //print(arr);
+                
+            }
+        }
+
+        
+    }
+
     
-    is.close();
     return 0;
 }
